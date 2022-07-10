@@ -16,6 +16,7 @@ export async function validateCheckout(req,res,next){
             _id: userId
         })
         if(!user) return res.status(404).send("Usuário não encontrado, faça seu cadastro")
+        res.locals.id=user._id
         next()
     } catch(e){
         res.status(401).send("Token inválida ou expirada")
