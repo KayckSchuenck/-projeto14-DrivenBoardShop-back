@@ -10,4 +10,5 @@ productRoute.get('/produtos/longs',getLongs);
 productRoute.get('/produtos/pecas',getPecas);
 productRoute.get('/produtos/:idProduto', getProduto);
 
+
 export default productRoute;

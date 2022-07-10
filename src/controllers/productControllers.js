@@ -1,5 +1,4 @@
 import db from '../db.js';
-import {ObjectId } from "mongodb";
 
 export async function getProdutos(req, res){
     
@@ -83,11 +82,11 @@ export async function getPecas(req, res){
 
 export async function getProduto(req, res){
     
-    const { id } = req.params;
-
+    const { idProduto } = req.params;
+    
     try{
         
-        const produto = await db.collection('produtos').find({ _id: ObjectId(id) }).toArray();
+        const produto = await db.collection('produtos').findOne({ idProduto: parseInt(idProduto) })
         
         if(produto.length === 0){
 
@@ -102,3 +101,17 @@ export async function getProduto(req, res){
         console.log(error);
     }
 }
+
+// export async function setProduto(req, res){
+
+//     console.log(req.body);
+//     res.send(req.body);
+    
+//     const promise = db.collection('produtos').insertOne(req.body);
+//     promise.then((response)=>{
+
+//         res.status(201).send(response.data);
+//     })
+
+//     promise.catch(err => res.status(500).send(err))
+// }
