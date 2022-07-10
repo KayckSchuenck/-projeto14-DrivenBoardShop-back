@@ -1,7 +1,7 @@
 import db from '../db.js'
 import joi from 'joi'
 
-export default async function postCart(req,res) {
+export async function postCart(req,res) {
     const cartSchema=joi.array().items({
         qtd:joi.number().required(),
         idProduto:joi.number().required()
@@ -13,9 +13,11 @@ export default async function postCart(req,res) {
     let valor=0
     try{
         arrayProdutos.map(async elem=>{
-            const produto= await db.collection("produtos").find({idProduto:elem.idProduto})
+            const produto= await db.collection("produtos").find({idProduto:elem.idProduto}).toArray()
+            
             valor+=produto.valor*elem.qtd
-            cartProducts.push(produto)
+            cartProducts.push(produto[0])
+            console.log(cartProducts)
         })
         res.send({produtos:cartProducts,valor})
     } catch(e){
@@ -23,7 +25,7 @@ export default async function postCart(req,res) {
     }
 }
 
-export default async function checkout(req,res) {
+export async function checkout(req,res) {
     const checkoutSchema=joi.object({
         endereco:joi.object().required(),
         produtos:joi.array().min(1).required()
@@ -51,6 +53,7 @@ export default async function checkout(req,res) {
                 await db.collection("produtos").updateOne({ idProduto:elem.idProduto },
                 { $inc:{ qtd:-elem.qtd } })
             })
+            return res.sendStatus(200)
         }
         else return res.status(401).send(`Não há estoque suficiente do(s) produto(s): ${invalidos}, por favor diminua a quantidade e tente novamente`)
     } catch(e){
