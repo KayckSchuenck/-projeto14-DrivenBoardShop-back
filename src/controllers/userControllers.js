@@ -2,23 +2,21 @@ import db from '../db.js'
 import joi from 'joi'
 
 export async function postCart(req,res) {
-    const cartSchema=joi.array().items({
+    const cartSchema=joi.array().min(1).items(joi.object({
         qtd:joi.number().required(),
         idProduto:joi.number().required()
-    })
+    }))
     const validation=cartSchema.validate(req.body)
     if(validation.error) return res.sendStatus(422)
     const arrayProdutos=req.body
     const cartProducts=[]
     let valor=0
     try{
-        arrayProdutos.map(async elem=>{
-            const produto= await db.collection("produtos").find({idProduto:elem.idProduto}).toArray()
-            
+        await Promise.all(arrayProdutos.map(async elem=>{
+            const produto= await db.collection("produtos").findOne({idProduto:elem.idProduto})
             valor+=produto.valor*elem.qtd
-            cartProducts.push(produto[0])
-            console.log(cartProducts)
-        })
+            cartProducts.push(produto)
+        }))
         res.send({produtos:cartProducts,valor})
     } catch(e){
         res.status(500).send("Produto não encontrado, tente novamente")

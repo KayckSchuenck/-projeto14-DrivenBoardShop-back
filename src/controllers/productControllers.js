@@ -4,7 +4,8 @@ export async function getProdutos(req, res){
     
     try{
         
-        const produtos = await db.collection('produtos').find({}).toArray();
+        const produtos = await db.collection('produtos').find().toArray();
+        console.log(produtos)
         res.status(200).send(produtos);
 
     }catch(error){
