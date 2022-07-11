@@ -7,7 +7,7 @@ export async function postCart(req,res) {
         idProduto:joi.number().required()
     }))
     const validation=cartSchema.validate(req.body)
-    if(validation.error) return res.sendStatus(422)
+    if(validation.error) return res.status(422).send("Nenhum produto no carrinho")
     const arrayProdutos=req.body
     const cartProducts=[]
     let valor=0
@@ -20,6 +20,7 @@ export async function postCart(req,res) {
         res.send({produtos:cartProducts,valor})
     } catch(e){
         res.status(500).send("Produto não encontrado, tente novamente")
+        console.log(e)
     }
 }
 
