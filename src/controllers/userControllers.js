@@ -37,9 +37,9 @@ export async function checkout(req,res) {
     let valor=0
     try{
         await Promise.all(produtos.map(async elem=>{
-            const product= await db.collection("produtos").find({idProduto:elem.idProduto})
+            const product= await db.collection("produtos").findOne({idProduto:elem.idProduto})
             if(product.qtd<elem.qtd){
-                invalidos+=`${product.nomeProduto},`
+                invalidos+=`${product.nomeProduto}-`
             }
             if(invalidos===''){
                 valor+=product.valor*product.qtd
