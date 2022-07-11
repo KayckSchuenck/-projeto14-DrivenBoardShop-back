@@ -4,6 +4,7 @@ import db from "../db.js"
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'
 import dayjs from 'dayjs'
+import {MongoObject, ObjectId} from 'mongodb'
 
 dotenv.config()
 
@@ -49,7 +50,7 @@ export async function login(req,res) {
         const user=await db.collection("usuarios").findOne({email})
         if(user && bcrypt.compareSync(password, user.hashPassword)){
             const {_id }=user
-            const dados={userId:_id}
+            const dados={userId:new ObjectId(_id)}
             const chaveSecreta = process.env.JWT_SECRET;
             const configuracoes = { expiresIn: 60*60*24 }
             const token = jwt.sign(dados, chaveSecreta,configuracoes);

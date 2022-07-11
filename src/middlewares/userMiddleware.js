@@ -10,6 +10,7 @@ export async function validateCheckout(req,res,next){
     const chaveSecreta = process.env.JWT_SECRET;
     try{
         const {userId} = jwt.verify(token, chaveSecreta);
+        console.log(userId)
         const session = await db.collection("sessoes").findOne({ token })
         if (!session) return res.status(401).send("Usuário não encontrado, faça login novamente")
         const user = await db.collection("usuarios").findOne({ 
