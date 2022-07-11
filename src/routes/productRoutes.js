@@ -1,13 +1,11 @@
 import {Router} from 'express';
-import {getProdutos, getSkate, getLongs, getPecas, getProduto} from '../controllers/productControllers.js'
+import {getProdutos, getProduto, getCategorias} from '../controllers/productControllers.js'
 
 const productRouter = Router();
 
 
 productRouter.get('/produtos', getProdutos);
-productRouter.get('/produtos/skate', getSkate);
-productRouter.get('/produtos/longs',getLongs);
-productRouter.get('/produtos/pecas',getPecas);
+productRouter.get('/produtos/categorias/:categoria', getCategorias);
 productRouter.get('/produtos/:idProduto', getProduto);
 
 
