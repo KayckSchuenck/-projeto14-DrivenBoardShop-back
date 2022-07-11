@@ -36,16 +36,15 @@ export async function checkout(req,res) {
     let invalidos=''
     let valor=0
     try{
-        produtos.map(async elem=>{
+        await Promise.all(produtos.map(async elem=>{
             const product= await db.collection("produtos").find({idProduto:elem.idProduto})
             if(product.qtd<elem.qtd){
                 invalidos+=`${product.nomeProduto},`
-                return
             }
             if(invalidos===''){
                 valor+=product.valor*product.qtd
             }
-        })
+        }))
         if(invalidos==='') {
             await db.collection('confirmados').insertOne({endereco,idUser,produtos,valor})
             produtos.map(async elem=>{
@@ -53,8 +52,7 @@ export async function checkout(req,res) {
                 { $inc:{ qtd:-elem.qtd } })
             })
             return res.sendStatus(200)
-        }
-        else return res.status(401).send(`Não há estoque suficiente do(s) produto(s): ${invalidos}, por favor diminua a quantidade e tente novamente`)
+        } else return res.status(401).send(`Não há estoque suficiente do(s) produto(s): ${invalidos}, por favor diminua a quantidade e tente novamente`)
     } catch(e){
         res.status(500).send("Produto não encontrado, tente novamente")
     }
